@@ -1,0 +1,9 @@
+<%= form_tag "/post/#{@post.id}", method: "post", class: "container card pt-2 pb-2 mt-3" do %>
+    <div class="form-group">
+      <label for="exampleTextarea">수정하기</label>
+      <%= text_area_tag :content, @post.content, class: "form-control", id: "exampleTextarea" %>
+    </div>
+    <div>
+      <%= button_tag "글쓰기", class: "btn btn-primary fr" %>
+    </div>
+<% end %>

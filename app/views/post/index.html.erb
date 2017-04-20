@@ -1,0 +1,71 @@
+<div class="container mt-3">
+  <div class="row">
+    <div class="col-12 col-md-3">
+      <div class="card">
+        <%= image_tag "dongkeun.jpg", class: "card-img-top", alt: "프로필 사진" %>
+        <div class="card-block">
+          <h4 class="card-title"><%= @user.name %></h4>
+          <p class="card-text">작성 글: <%= @user.posts.count %></p>
+          <a href="#" class="btn">정보수정</a>
+        </div>
+      </div>
+    </div>
+    <div class="col-12 col-md-9">
+      <div class="row">
+        <%= form_tag post_path, class: "container card pt-2 pb-2" do %>
+            <div class="form-group">
+              <label for="exampleTextarea">뉴스피드 글쓰기</label>
+              <%= text_area_tag :content, nil, class: "form-control", id: "exampleTextarea", row: "5", placeholder: "무슨 생각을 하고있나요?"  %>
+            </div>
+            <div>
+              <%= button_tag "글쓰기", class: "btn btn-primary fr" %>
+            </div>
+        <% end %>
+      </div>
+      <% @user.posts.order('created_at desc').each do |x| %>
+          <div class="row mt-2">
+            <div class="card wd-100">
+              <div class="card-header">
+                <%= x.user.name %> <%= x.created_at %>
+              </div>
+              <div class="card-block">
+                <p class="card-text"><%= x.content %></p>
+                <%= x.liked_users.size %>명이 좋아합니다.
+                <% if @user.liked?(x) %>
+                    <%= link_to "좋아요 취소", "/post/#{x.id}/like", method: "post" %>
+                <% else %>
+                    <%= link_to "좋아요", "/post/#{x.id}/like", method: "post" %>
+                <% end %>
+                <% if x.user.id == current_user.id %>
+                    <%= link_to "삭제", "/post/destroy/#{x.id}", method: "delete", class: "fr" %>
+                    <a href="/post/edit/<%=x.id%>" class="fr mr-3">수정</a>
+                <%end%>
+                <%= form_tag "/post/#{x.id}/comment", method: "post" do %>
+                  <div class="form-group">
+                    <label for="exampleTextarea">댓글</label>
+                    <textarea class="form-control" id="exampleTextarea" rows="2" name="content"></textarea>
+                    <%= button_tag "댓글작성", class: "btn btn-primary fr mt-1" %>
+                  </div>
+                <% end %>
+                <% unless @comment.find_by(post_id: x.id).nil? %>
+                  <div class="card mt-5">
+                    <ul class="list-group list-group-flush">
+                      <% @comment.where(post_id: x.id).order('created_at desc').each do |y| %>
+                          <li class="list-group-item card-block">
+                            <%= y.content %>
+                            <%= link_to "(삭제)", "/post/destroy_comment/#{y.id}", method: "delete"%>
+                          </li>
+                      <% end %>
+                    </ul>
+                  </div>
+                <% end %>
+              </div>
+            </div>
+          </div>
+      <% end %>
+    </div>
+  </div>
+</div>
+
+
+

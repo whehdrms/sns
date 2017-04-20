@@ -1,0 +1,7 @@
+<%= form_tag post_path, class: "container mt-3" do %>
+  <div class="form-group">
+    <label for="exampleTextarea">뉴스피드 글쓰기</label>
+    <%= text_area_tag :content, nil, class: "form-control", id: "exampleTextarea", row: "5", placeholder: "무슨 생각을 하고있나요?"  %>
+  </div>
+    <%= button_tag "글쓰기", class: "btn btn-primary" %>
+<% end %>

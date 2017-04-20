@@ -1,0 +1,29 @@
+<nav class="navbar navbar-toggleable-md navbar-light bg-faded">
+  <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+  <a class="navbar-brand" href="#">SNS</a>
+
+  <div class="collapse navbar-collapse float-right" id="navbarSupportedContent">
+    <ul class="navbar-nav mr-auto">
+      <li class="nav-item active">
+        <a class="nav-link" href="#">뉴스피드<span class="sr-only">(current)</span></a>
+      </li>
+      <% if user_signed_in? %>
+        <li class="nav-item">
+          <a class="nav-link"><%= current_user.name %></a>
+        </li>
+        <li class="nav-item">
+          <%= link_to "로그아웃", destroy_user_session_path, class: "nav-link", method: "DELETE" %>
+        </li>
+      <% else %>
+        <li class="nav-item">
+          <a class="nav-link" href="/users/sign_up">회원가입</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="/users/sign_in">로그인</a>
+        </li>
+      <% end %>
+    </ul>
+  </div>
+</nav>
