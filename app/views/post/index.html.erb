@@ -6,30 +6,50 @@
         <div class="card-block">
           <h4 class="card-title"><%= @user.name %></h4>
           <p class="card-text">작성 글: <%= @user.posts.count %></p>
+          <p>팔로워 : <%= current_user.followers.length %></p>
+          <p>팔로잉 : <%= current_user.followings.length %></p>
           <a href="#" class="btn">정보수정</a>
         </div>
       </div>
     </div>
     <div class="col-12 col-md-9">
       <div class="row">
-        <%= form_tag post_path, class: "container card pt-2 pb-2" do %>
+        <%= form_tag post_path, class: "container card pt-2 pb-2", multipart: true do %>
             <div class="form-group">
               <label for="exampleTextarea">뉴스피드 글쓰기</label>
               <%= text_area_tag :content, nil, class: "form-control", id: "exampleTextarea", row: "5", placeholder: "무슨 생각을 하고있나요?"  %>
+              <div class="input-field">
+                <%= file_field_tag :image %>
+              </div>
             </div>
             <div>
               <%= button_tag "글쓰기", class: "btn btn-primary fr" %>
             </div>
         <% end %>
       </div>
-      <% @user.posts.order('created_at desc').each do |x| %>
+      <% @timeline.each do |x| %>
           <div class="row mt-2">
             <div class="card wd-100">
               <div class="card-header">
                 <%= x.user.name %> <%= x.created_at %>
+              <% if current_user != x.user %>
+                <% if current_user.followings.include?(x.user) %>
+                  <%= form_tag follow_path(x.user.id), method: 'delete' do  %>
+                    <%= button_tag "팔로우 취소", class: "btn btn-outline-danger fr" %>
+                  <% end %>
+                <% else %>
+                  <%= form_tag follows_path do  %>
+                      <input type="hidden" name="followed_id" value="<%= x.user.id %>">
+                      <button type="submit" class="btn btn-outline-primary fr">팔로우</button>
+                  <% end %>
+                <% end %>
+              <% end %>
               </div>
               <div class="card-block">
                 <p class="card-text"><%= x.content %></p>
+                <% unless x.image.url.nil? %>
+                    <div class="card-image"><img src="<%= x.image.url %>" alt="image"/></div>
+                <% end %>
                 <%= x.liked_users.size %>명이 좋아합니다.
                 <% if @user.liked?(x) %>
                     <%= link_to "좋아요 취소", "/post/#{x.id}/like", method: "post" %>
